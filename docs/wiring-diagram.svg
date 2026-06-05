@@ -128,8 +128,8 @@
   <g fill="#74c0fc" font-size="10" text-anchor="end">
     <text x="632" y="210">GPIO 0 (BOOT)</text><rect x="637" y="200" width="8" height="10" fill="#69db7c" rx="1"/>
     <text x="632" y="235">GPIO 1</text><rect x="637" y="225" width="8" height="10" fill="#69db7c" rx="1"/>
-    <text x="632" y="285">GPIO 43 (TX)</text><rect x="637" y="275" width="8" height="10" fill="#ff6b6b" rx="1"/>
-    <text x="632" y="310">GPIO 44 (RX)</text><rect x="637" y="300" width="8" height="10" fill="#ff6b6b" rx="1"/>
+    <text x="632" y="285">GPIO 14 (TX)</text><rect x="637" y="275" width="8" height="10" fill="#ff6b6b" rx="1"/>
+    <text x="632" y="310">GPIO 15 (RX)</text><rect x="637" y="300" width="8" height="10" fill="#ff6b6b" rx="1"/>
     <text x="632" y="370">3V3</text><rect x="637" y="360" width="8" height="10" fill="#ef4444" rx="1"/>
     <text x="632" y="395">GND</text><rect x="637" y="385" width="8" height="10" fill="#6b7280" rx="1"/>
     <text x="632" y="420">5V (VIN)</text><rect x="637" y="410" width="8" height="10" fill="#f97316" rx="1"/>
@@ -237,10 +237,10 @@
 
   <!-- 摄像头到ESP32连线 (红色) -->
   <path d="M 730 290 Q 680 290 665 285 L 640 285" stroke="#ff6b6b" stroke-width="2" fill="none" marker-end="url(#arrowR)" filter="url(#glow)"/>
-  <text x="680" y="280" fill="#ff6b6b" font-size="9">TX→GPIO43</text>
+  <text x="680" y="280" fill="#ff6b6b" font-size="9">TX→GPIO14</text>
 
   <path d="M 730 305 Q 680 305 665 310 L 640 310" stroke="#ff6b6b" stroke-width="2" fill="none" marker-end="url(#arrowR)" filter="url(#glow)"/>
-  <text x="680" y="318" fill="#ff6b6b" font-size="9">RX→GPIO44</text>
+  <text x="680" y="318" fill="#ff6b6b" font-size="9">RX→GPIO15</text>
 
   <!-- ========== 底部：接线颜色图例 + 说明 ========== -->
   <rect x="30" y="560" width="1140" height="320" rx="10" fill="#111d2b" stroke="#2a4a6a" stroke-width="1.5"/>
@@ -291,7 +291,7 @@
     <text x="500" y="805">② MAX98357A 按 GPIO 7/8/9 接线 (VDD→5V VIN)</text>
     <text x="500" y="825">③ WS2812B DIN→GPIO38 (VDD→5V)</text>
     <text x="500" y="845">④ 按钮一端→GPIO，另一端→GND</text>
-    <text x="500" y="865">⑤ ESP32-CAM TX→GPIO43, RX→GPIO44</text>
+    <text x="500" y="865">⑤ ESP32-CAM TX→GPIO14, RX→GPIO15</text>
   </g>
 
   <!-- 注意事项 -->

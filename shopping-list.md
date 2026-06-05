@@ -42,8 +42,8 @@ ESP32-S3 引脚分配:
 │   ├── BCLK → GPIO 7
 │   ├── LRC  → GPIO 8
 │   └── DIN  → GPIO 9
-├── 摄像头 (ESP32-CAM, 通过UART或SPI连接)
-│   └── UART TX/RX → GPIO 43/44
+├── 摄像头 (ESP32-CAM, 通过UART连接)
+│   └── UART TX/RX → GPIO 14/15
 ├── LED (WS2812)
 │   └── DIN → GPIO 38
 ├── 按钮

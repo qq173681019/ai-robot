@@ -8,6 +8,7 @@ AI Robot - ESP32-S3 固件 (MicroPython)
   INMP441:  SCK→GPIO4, WS→GPIO5, SD→GPIO6, L/R→GND
   MAX98357A: BCLK→GPIO7, LRC→GPIO8, DIN→GPIO9
   WS2812:  DIN→GPIO38
+  摄像头:  TX→GPIO14, RX→GPIO15
   按钮:    GPIO0 (用BOOT键复用)
 """
 

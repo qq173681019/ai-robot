@@ -104,6 +104,24 @@
   <text x="350" y="515" text-anchor="middle" fill="#ef4444" font-size="11" font-weight="bold">3.3V 电源线 (红线)</text>
   <line x1="160" y1="520" x2="600" y2="520" stroke="#6b7280" stroke-width="2.5" opacity="0.7"/>
   <text x="350" y="535" text-anchor="middle" fill="#9ca3af" font-size="11">GND 公共地线 (黑线)</text>
+  <!-- ===== 补全：电源轨扩展（5V + 右侧 3.3V/GND） ===== -->
+  <!-- 5V 轨 (橙) - 给 MAX98357A / WS2812B 供电 -->
+  <line x1="160" y1="480" x2="900" y2="480" stroke="#f97316" stroke-width="2.5" opacity="0.7"/>
+  <text x="350" y="473" text-anchor="middle" fill="#f97316" font-size="11" font-weight="bold">5V 电源线 (VIN)</text>
+  <!-- 3.3V 轨延伸 -->
+  <line x1="600" y1="500" x2="900" y2="500" stroke="#ef4444" stroke-width="2.5" opacity="0.7"/>
+  <!-- GND 轨延伸 -->
+  <line x1="600" y1="520" x2="900" y2="520" stroke="#6b7280" stroke-width="2.5" opacity="0.7"/>
+  <!-- ESP32 3V3 接到 3.3V 轨 -->
+  <line x1="640" y1="370" x2="640" y2="500" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>
+  <text x="650" y="435" fill="#ef4444" font-size="8">3V3</text>
+  <!-- ESP32 GND 接到 GND 轨 -->
+  <line x1="640" y1="395" x2="640" y2="520" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>
+  <text x="650" y="455" fill="#9ca3af" font-size="8">GND</text>
+  <!-- ESP32 5V 接到 5V 轨 -->
+  <line x1="640" y1="420" x2="640" y2="480" stroke="#f97316" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>
+  <text x="650" y="450" fill="#f97316" font-size="8">5V</text>
+
 
   <!-- ========== ESP32-S3 主控 (中央) ========== -->
   <rect x="420" y="130" width="220" height="350" rx="10" fill="url(#espGrad)" stroke="#74c0fc" stroke-width="2.5" filter="url(#shadow)"/>
@@ -169,6 +187,17 @@
 
   <path d="M 240 230 L 240 270 Q 240 280 250 280 L 405 280 Q 410 280 410 275 L 410 260 L 415 260" stroke="#4ade80" stroke-width="2" fill="none" marker-end="url(#arrowG)" filter="url(#glow)"/>
   <text x="320" y="286" fill="#4ade80" font-size="9">SD→GPIO6</text>
+  <!-- ===== 补全：INMP441 电源引脚连线 ===== -->
+  <!-- VDD → 3.3V 轨 -->
+  <path d="M 360 170 L 360 240 Q 360 250 350 250 L 220 250 L 220 500" stroke="#ef4444" stroke-width="2" fill="none" marker-end="url(#arrowG)"/>
+  <text x="370" y="245" fill="#ef4444" font-size="8">→ 3.3V</text>
+  <!-- L/R → GND 轨 -->
+  <path d="M 360 190 L 360 470 L 290 470 L 290 520" stroke="#6b7280" stroke-width="2" fill="none"/>
+  <text x="370" y="465" fill="#9ca3af" font-size="8">→ GND</text>
+  <!-- GND → GND 轨 -->
+  <path d="M 360 210 L 360 480 L 320 480 L 320 520" stroke="#6b7280" stroke-width="2" fill="none"/>
+  <text x="370" y="475" fill="#9ca3af" font-size="8">→ GND</text>
+
 
   <!-- ========== MAX98357A 功放 + 喇叭 (左中) ========== -->
   <rect x="170" y="310" width="180" height="110" rx="8" fill="url(#modGrad)" stroke="#ffa94d" stroke-width="2" filter="url(#shadow)"/>
@@ -196,6 +225,14 @@
 
   <path d="M 350 415 Q 385 415 390 380 L 390 350 Q 390 345 400 345 L 415 345" stroke="#ffa94d" stroke-width="2" fill="none" marker-end="url(#arrowO)" filter="url(#glow)"/>
   <text x="375" y="372" fill="#ffa94d" font-size="9">DIN→GPIO9</text>
+  <!-- ===== 补全：MAX98357A 电源引脚连线 ===== -->
+  <!-- VDD → 5V 轨 -->
+  <path d="M 360 380 L 380 380 L 380 480" stroke="#f97316" stroke-width="2" fill="none"/>
+  <text x="388" y="430" fill="#f97316" font-size="8">→ 5V</text>
+  <!-- GND → GND 轨 -->
+  <path d="M 360 400 L 420 400 L 420 520" stroke="#6b7280" stroke-width="2" fill="none"/>
+  <text x="428" y="460" fill="#9ca3af" font-size="8">→ GND</text>
+
 
   <!-- ========== WS2812B LED (右下) ========== -->
   <rect x="730" y="350" width="170" height="120" rx="8" fill="url(#ledGrad)" stroke="#da77f2" stroke-width="2" filter="url(#shadow)"/>
@@ -211,6 +248,14 @@
   <!-- LED到ESP32连线 (紫色) -->
   <path d="M 730 400 Q 680 400 670 390 L 670 390 Q 650 390 645 395 L 645 390 L 640 390" stroke="#da77f2" stroke-width="2" fill="none" marker-end="url(#arrowP)" filter="url(#glow)"/>
   <text x="680" y="385" fill="#da77f2" font-size="9">DIN→GPIO38</text>
+  <!-- ===== 补全：WS2812B 电源引脚连线 ===== -->
+  <!-- VDD → 5V 轨 (从 LED 块底部) -->
+  <path d="M 815 470 L 815 480" stroke="#f97316" stroke-width="2" fill="none"/>
+  <text x="825" y="478" fill="#f97316" font-size="8">→ 5V</text>
+  <!-- GND → GND 轨 -->
+  <path d="M 845 470 L 845 485 L 870 485 L 870 520" stroke="#6b7280" stroke-width="2" fill="none"/>
+  <text x="855" y="500" fill="#9ca3af" font-size="8">→ GND</text>
+
 
   <!-- ========== 按钮 (右上) ========== -->
   <rect x="730" y="150" width="170" height="100" rx="8" fill="url(#btnGrad)" stroke="#69db7c" stroke-width="2" filter="url(#shadow)"/>
@@ -229,6 +274,12 @@
 
   <path d="M 730 240 Q 680 240 670 235 L 670 235 L 640 235" stroke="#69db7c" stroke-width="2" fill="none" marker-end="url(#arrowG)" filter="url(#glow)"/>
   <text x="680" y="249" fill="#69db7c" font-size="9">GPIO1</text>
+  <!-- ===== 补全：按钮 GND 端连线 ===== -->
+  <!-- 左边 BOOT 按钮的 GND 端 → GND 轨 -->
+  <path d="M 783 230 L 783 250 L 770 250 L 770 285 L 600 285 L 600 520" stroke="#6b7280" stroke-width="1.5" fill="none" stroke-dasharray="3,2" opacity="0.6"/>
+  <!-- 右边自定义按钮的 GND 端 → GND 轨 -->
+  <path d="M 848 230 L 848 270 L 850 270 L 850 300 L 605 300 L 605 520" stroke="#6b7280" stroke-width="1.5" fill="none" stroke-dasharray="3,2" opacity="0.6"/>
+
 
   <!-- ========== 摄像头 (右侧) ========== -->
   <rect x="730" y="270" width="170" height="60" rx="8" fill="url(#modGrad)" stroke="#ff6b6b" stroke-width="2" filter="url(#shadow)"/>
@@ -241,6 +292,14 @@
 
   <path d="M 730 305 Q 680 305 665 310 L 640 310" stroke="#ff6b6b" stroke-width="2" fill="none" marker-end="url(#arrowR)" filter="url(#glow)"/>
   <text x="680" y="318" fill="#ff6b6b" font-size="9">RX→GPIO15</text>
+  <!-- ===== 补全：ESP32-CAM 电源引脚连线 ===== -->
+  <!-- 5V → 5V 轨 -->
+  <path d="M 900 300 L 900 480" stroke="#f97316" stroke-width="2" fill="none"/>
+  <text x="908" y="390" fill="#f97316" font-size="8">5V</text>
+  <!-- GND → GND 轨 -->
+  <path d="M 900 310 L 920 310 L 920 520" stroke="#6b7280" stroke-width="2" fill="none"/>
+  <text x="928" y="415" fill="#9ca3af" font-size="8">GND</text>
+
 
   <!-- ========== 底部：接线颜色图例 + 说明 ========== -->
   <rect x="30" y="560" width="1140" height="320" rx="10" fill="#111d2b" stroke="#2a4a6a" stroke-width="1.5"/>
@@ -272,6 +331,8 @@
 
   <line x1="60" y1="795" x2="100" y2="795" stroke="#6b7280" stroke-width="3"/>
   <text x="110" y="799" fill="#9ca3af" font-size="12">GND 公共地线 (黑线)</text>
+  <text x="110" y="822" fill="#9ca3af" font-size="10" font-style="italic">所有模块的 VDD/VCC/5V/GND 都需要接到对应电源轨（见上）</text>
+
 
   <!-- 组装步骤 -->
   <text x="470" y="590" fill="#fff" font-size="16" font-weight="bold">组装步骤</text>

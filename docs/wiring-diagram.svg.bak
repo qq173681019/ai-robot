@@ -1,0 +1,314 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" font-family="'Segoe UI', 'Microsoft YaHei', sans-serif">
+  <defs>
+    <!-- 背景渐变 -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f1923"/>
+      <stop offset="100%" style="stop-color:#1a2a3a"/>
+    </linearGradient>
+    <!-- ESP32 渐变 -->
+    <linearGradient id="espGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2d5f8a"/>
+      <stop offset="100%" style="stop-color:#1e3d5c"/>
+    </linearGradient>
+    <!-- 模块渐变 -->
+    <linearGradient id="modGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a4a3a"/>
+      <stop offset="100%" style="stop-color:#1d3528"/>
+    </linearGradient>
+    <linearGradient id="powerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#5a3a2a"/>
+      <stop offset="100%" style="stop-color:#3d2818"/>
+    </linearGradient>
+    <linearGradient id="ledGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a2a5a"/>
+      <stop offset="100%" style="stop-color:#35183d"/>
+    </linearGradient>
+    <linearGradient id="btnGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3a4a5a"/>
+      <stop offset="100%" style="stop-color:#283848"/>
+    </linearGradient>
+    <!-- 发光效果 -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.5"/>
+    </filter>
+    <!-- 线条箭头 -->
+    <marker id="arrowR" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#ff6b6b"/>
+    </marker>
+    <marker id="arrowO" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#ffa94d"/>
+    </marker>
+    <marker id="arrowB" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#74c0fc"/>
+    </marker>
+    <marker id="arrowP" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#da77f2"/>
+    </marker>
+    <marker id="arrowW" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#aaa"/>
+    </marker>
+    <marker id="arrowG" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#69db7c"/>
+    </marker>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1200" height="900" fill="url(#bgGrad)"/>
+
+  <!-- 标题 -->
+  <text x="600" y="45" text-anchor="middle" fill="#fff" font-size="26" font-weight="bold">
+    AI Robot 接线示意图 — ESP32-S3 + INMP441 + MAX98357A
+  </text>
+  <text x="600" y="70" text-anchor="middle" fill="#8bb8e8" font-size="14">
+    ai-robot v1.0 | 总价 ≈ ¥100 | 面包板组装
+  </text>
+
+  <!-- ========== 供电链 (左侧) ========== -->
+  <!-- 18650电池 -->
+  <rect x="30" y="130" width="130" height="120" rx="8" fill="url(#powerGrad)" stroke="#d97706" stroke-width="2" filter="url(#shadow)"/>
+  <text x="95" y="155" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="bold">18650 电池 ×2</text>
+  <text x="95" y="175" text-anchor="middle" fill="#fcd34d" font-size="11">3.7V 2600mAh</text>
+  <text x="95" y="195" text-anchor="middle" fill="#aaa" font-size="10">串联 = 7.4V</text>
+  <!-- 电池图标 -->
+  <rect x="65" y="205" width="60" height="25" rx="3" fill="none" stroke="#fbbf24" stroke-width="1.5"/>
+  <rect x="125" y="212" width="6" height="11" rx="1" fill="#fbbf24"/>
+  <rect x="70" y="210" width="20" height="15" rx="1" fill="#4ade80" opacity="0.6"/>
+  <rect x="95" y="210" width="25" height="15" rx="1" fill="#4ade80" opacity="0.4"/>
+  <text x="95" y="245" text-anchor="middle" fill="#aaa" font-size="9">电池盒 (双节串联)</text>
+
+  <!-- TP4056充电模块 -->
+  <rect x="30" y="290" width="130" height="90" rx="8" fill="url(#powerGrad)" stroke="#d97706" stroke-width="2" filter="url(#shadow)"/>
+  <text x="95" y="315" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="bold">TP4056 充电</text>
+  <text x="95" y="335" text-anchor="middle" fill="#fcd34d" font-size="10">Type-C 5V 1A</text>
+  <text x="95" y="355" text-anchor="middle" fill="#aaa" font-size="9">B+ B- 接电池</text>
+  <text x="95" y="370" text-anchor="middle" fill="#aaa" font-size="9">OUT+ OUT- 输出</text>
+
+  <!-- AMS1117降压 -->
+  <rect x="30" y="420" width="130" height="80" rx="8" fill="url(#powerGrad)" stroke="#d97706" stroke-width="2" filter="url(#shadow)"/>
+  <text x="95" y="445" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="bold">AMS1117-3.3V</text>
+  <text x="95" y="465" text-anchor="middle" fill="#fcd34d" font-size="10">降压模块</text>
+  <text x="95" y="485" text-anchor="middle" fill="#aaa" font-size="9">IN: 5-12V → OUT: 3.3V</text>
+
+  <!-- 供电连线 -->
+  <line x1="95" y1="250" x2="95" y2="290" stroke="#fbbf24" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="108" y="275" fill="#fbbf24" font-size="9">B+ B-</text>
+  <line x1="95" y1="380" x2="95" y2="420" stroke="#fbbf24" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="108" y="405" fill="#fbbf24" font-size="9">OUT+ OUT-</text>
+
+  <!-- 3.3V / GND 到 ESP32 的总线 (水平线) -->
+  <line x1="160" y1="500" x2="600" y2="500" stroke="#ef4444" stroke-width="2.5" opacity="0.7"/>
+  <text x="350" y="515" text-anchor="middle" fill="#ef4444" font-size="11" font-weight="bold">3.3V 电源线 (红线)</text>
+  <line x1="160" y1="520" x2="600" y2="520" stroke="#6b7280" stroke-width="2.5" opacity="0.7"/>
+  <text x="350" y="535" text-anchor="middle" fill="#9ca3af" font-size="11">GND 公共地线 (黑线)</text>
+
+  <!-- ========== ESP32-S3 主控 (中央) ========== -->
+  <rect x="420" y="130" width="220" height="350" rx="10" fill="url(#espGrad)" stroke="#74c0fc" stroke-width="2.5" filter="url(#shadow)"/>
+  <text x="530" y="160" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">ESP32-S3</text>
+  <text x="530" y="180" text-anchor="middle" fill="#a5d8ff" font-size="11">DEVKITC-1 N16R8</text>
+  <!-- USB口图标 -->
+  <rect x="500" y="130" width="60" height="12" rx="2" fill="#555" stroke="#888" stroke-width="1"/>
+  <text x="530" y="140" text-anchor="middle" fill="#ddd" font-size="7">USB-C</text>
+
+  <!-- 左侧引脚 -->
+  <g fill="#74c0fc" font-size="10">
+    <text x="430" y="210">GPIO 4</text><rect x="415" y="200" width="8" height="10" fill="#4ade80" rx="1"/>
+    <text x="430" y="235">GPIO 5</text><rect x="415" y="225" width="8" height="10" fill="#4ade80" rx="1"/>
+    <text x="430" y="260">GPIO 6</text><rect x="415" y="250" width="8" height="10" fill="#4ade80" rx="1"/>
+    <text x="430" y="295">GPIO 7</text><rect x="415" y="285" width="8" height="10" fill="#ffa94d" rx="1"/>
+    <text x="430" y="320">GPIO 8</text><rect x="415" y="310" width="8" height="10" fill="#ffa94d" rx="1"/>
+    <text x="430" y="345">GPIO 9</text><rect x="415" y="335" width="8" height="10" fill="#ffa94d" rx="1"/>
+    <text x="430" y="390">GPIO 38</text><rect x="415" y="380" width="8" height="10" fill="#da77f2" rx="1"/>
+  </g>
+
+  <!-- 右侧引脚 -->
+  <g fill="#74c0fc" font-size="10" text-anchor="end">
+    <text x="632" y="210">GPIO 0 (BOOT)</text><rect x="637" y="200" width="8" height="10" fill="#69db7c" rx="1"/>
+    <text x="632" y="235">GPIO 1</text><rect x="637" y="225" width="8" height="10" fill="#69db7c" rx="1"/>
+    <text x="632" y="285">GPIO 14 (TX)</text><rect x="637" y="275" width="8" height="10" fill="#ff6b6b" rx="1"/>
+    <text x="632" y="310">GPIO 15 (RX)</text><rect x="637" y="300" width="8" height="10" fill="#ff6b6b" rx="1"/>
+    <text x="632" y="370">3V3</text><rect x="637" y="360" width="8" height="10" fill="#ef4444" rx="1"/>
+    <text x="632" y="395">GND</text><rect x="637" y="385" width="8" height="10" fill="#6b7280" rx="1"/>
+    <text x="632" y="420">5V (VIN)</text><rect x="637" y="410" width="8" height="10" fill="#f97316" rx="1"/>
+  </g>
+
+  <!-- ESP32 内部芯片图示 -->
+  <rect x="480" y="200" width="100" height="200" rx="5" fill="#1a3a5a" stroke="#3a6a9a" stroke-width="1" opacity="0.5"/>
+  <text x="530" y="260" text-anchor="middle" fill="#5a9aca" font-size="9">ESP32-S3</text>
+  <text x="530" y="275" text-anchor="middle" fill="#5a9aca" font-size="9">Wi-Fi</text>
+  <text x="530" y="290" text-anchor="middle" fill="#5a9aca" font-size="9">BLE 5.0</text>
+  <text x="530" y="305" text-anchor="middle" fill="#5a9aca" font-size="9">240MHz</text>
+  <text x="530" y="320" text-anchor="middle" fill="#5a9aca" font-size="9">16MB Flash</text>
+  <text x="530" y="335" text-anchor="middle" fill="#5a9aca" font-size="9">8MB PSRAM</text>
+
+  <!-- ========== INMP441 麦克风 (左上) ========== -->
+  <rect x="170" y="100" width="180" height="130" rx="8" fill="url(#modGrad)" stroke="#4ade80" stroke-width="2" filter="url(#shadow)"/>
+  <text x="260" y="125" text-anchor="middle" fill="#4ade80" font-size="14" font-weight="bold">INMP441 麦克风</text>
+  <text x="260" y="145" text-anchor="middle" fill="#86efac" font-size="10">I2S 全向麦克风模块</text>
+  <!-- 引脚标注 -->
+  <g font-size="10" fill="#ccc">
+    <text x="185" y="170">SCK</text>
+    <text x="185" y="190">WS</text>
+    <text x="185" y="210">SD</text>
+    <text x="315" y="170" text-anchor="end">VDD → 3.3V</text>
+    <text x="315" y="190" text-anchor="end">L/R → GND (左声道)</text>
+    <text x="315" y="210" text-anchor="end">GND → GND</text>
+  </g>
+  <!-- 麦克风图标 -->
+  <circle cx="260" cy="170" r="0" fill="none"/>
+
+  <!-- 麦克风到ESP32连线 (绿色) -->
+  <path d="M 260 230 L 260 250 Q 260 260 270 260 L 405 260 Q 410 260 410 255 L 410 210 L 415 210" stroke="#4ade80" stroke-width="2" fill="none" marker-end="url(#arrowG)" filter="url(#glow)"/>
+  <text x="320" y="253" fill="#4ade80" font-size="9">SCK→GPIO4</text>
+
+  <path d="M 250 230 L 250 260 Q 250 270 260 270 L 405 270 Q 410 270 410 265 L 410 235 L 415 235" stroke="#4ade80" stroke-width="2" fill="none" marker-end="url(#arrowG)" filter="url(#glow)"/>
+  <text x="320" y="270" fill="#4ade80" font-size="9">WS→GPIO5</text>
+
+  <path d="M 240 230 L 240 270 Q 240 280 250 280 L 405 280 Q 410 280 410 275 L 410 260 L 415 260" stroke="#4ade80" stroke-width="2" fill="none" marker-end="url(#arrowG)" filter="url(#glow)"/>
+  <text x="320" y="286" fill="#4ade80" font-size="9">SD→GPIO6</text>
+
+  <!-- ========== MAX98357A 功放 + 喇叭 (左中) ========== -->
+  <rect x="170" y="310" width="180" height="110" rx="8" fill="url(#modGrad)" stroke="#ffa94d" stroke-width="2" filter="url(#shadow)"/>
+  <text x="260" y="335" text-anchor="middle" fill="#ffa94d" font-size="14" font-weight="bold">MAX98357A 功放</text>
+  <text x="260" y="355" text-anchor="middle" fill="#ffd43b" font-size="10">I2S D类功放模块</text>
+  <g font-size="10" fill="#ccc">
+    <text x="185" y="380">BCLK</text>
+    <text x="185" y="400">LRC</text>
+    <text x="185" y="415">DIN</text>
+    <text x="315" y="380" text-anchor="end">VDD → 5V (VIN)</text>
+    <text x="315" y="400" text-anchor="end">GND → GND</text>
+  </g>
+
+  <!-- 喇叭 -->
+  <rect x="170" y="440" width="180" height="50" rx="8" fill="url(#modGrad)" stroke="#ffa94d" stroke-width="1.5" stroke-dasharray="5,3" filter="url(#shadow)"/>
+  <text x="260" y="462" text-anchor="middle" fill="#ffa94d" font-size="13" font-weight="bold">🔊 3W 4Ω 喇叭</text>
+  <text x="260" y="480" text-anchor="middle" fill="#aaa" font-size="9">40mm 全频 → 接功放输出</text>
+
+  <!-- 功放到ESP32连线 (橙色) -->
+  <path d="M 350 370 Q 380 370 390 340 L 390 300 Q 390 295 400 295 L 415 295" stroke="#ffa94d" stroke-width="2" fill="none" marker-end="url(#arrowO)" filter="url(#glow)"/>
+  <text x="375" y="318" fill="#ffa94d" font-size="9">BCLK→GPIO7</text>
+
+  <path d="M 350 390 Q 380 390 385 350 L 385 325 Q 385 320 395 320 L 415 320" stroke="#ffa94d" stroke-width="2" fill="none" marker-end="url(#arrowO)" filter="url(#glow)"/>
+  <text x="375" y="345" fill="#ffa94d" font-size="9">LRC→GPIO8</text>
+
+  <path d="M 350 415 Q 385 415 390 380 L 390 350 Q 390 345 400 345 L 415 345" stroke="#ffa94d" stroke-width="2" fill="none" marker-end="url(#arrowO)" filter="url(#glow)"/>
+  <text x="375" y="372" fill="#ffa94d" font-size="9">DIN→GPIO9</text>
+
+  <!-- ========== WS2812B LED (右下) ========== -->
+  <rect x="730" y="350" width="170" height="120" rx="8" fill="url(#ledGrad)" stroke="#da77f2" stroke-width="2" filter="url(#shadow)"/>
+  <text x="815" y="375" text-anchor="middle" fill="#da77f2" font-size="14" font-weight="bold">WS2812B LED ×4</text>
+  <text x="815" y="395" text-anchor="middle" fill="#e599f7" font-size="10">可寻址RGB灯珠</text>
+  <!-- LED示意 -->
+  <circle cx="770" cy="430" r="8" fill="#ff6b6b" opacity="0.8"/><text x="770" y="433" text-anchor="middle" fill="#fff" font-size="7">R</text>
+  <circle cx="795" cy="430" r="8" fill="#4ade80" opacity="0.8"/><text x="795" y="433" text-anchor="middle" fill="#fff" font-size="7">G</text>
+  <circle cx="820" cy="430" r="8" fill="#74c0fc" opacity="0.8"/><text x="820" y="433" text-anchor="middle" fill="#fff" font-size="7">B</text>
+  <circle cx="845" cy="430" r="8" fill="#ffd43b" opacity="0.8"/><text x="845" y="433" text-anchor="middle" fill="#fff" font-size="7">Y</text>
+  <text x="815" y="460" text-anchor="middle" fill="#aaa" font-size="9">VDD→5V GND→GND</text>
+
+  <!-- LED到ESP32连线 (紫色) -->
+  <path d="M 730 400 Q 680 400 670 390 L 670 390 Q 650 390 645 395 L 645 390 L 640 390" stroke="#da77f2" stroke-width="2" fill="none" marker-end="url(#arrowP)" filter="url(#glow)"/>
+  <text x="680" y="385" fill="#da77f2" font-size="9">DIN→GPIO38</text>
+
+  <!-- ========== 按钮 (右上) ========== -->
+  <rect x="730" y="150" width="170" height="100" rx="8" fill="url(#btnGrad)" stroke="#69db7c" stroke-width="2" filter="url(#shadow)"/>
+  <text x="815" y="175" text-anchor="middle" fill="#69db7c" font-size="14" font-weight="bold">轻触按钮 ×2</text>
+  <text x="815" y="195" text-anchor="middle" fill="#aaa" font-size="10">6×6×5mm</text>
+  <!-- 按钮示意 -->
+  <rect x="770" y="210" width="25" height="20" rx="3" fill="#555" stroke="#888" stroke-width="1"/>
+  <rect x="835" y="210" width="25" height="20" rx="3" fill="#555" stroke="#888" stroke-width="1"/>
+  <text x="782" y="244" text-anchor="middle" fill="#aaa" font-size="8">BOOT</text>
+  <text x="847" y="244" text-anchor="middle" fill="#aaa" font-size="8">自定义</text>
+  <text x="815" y="260" text-anchor="middle" fill="#aaa" font-size="9">一端→GPIO 另一端→GND</text>
+
+  <!-- 按钮到ESP32连线 (绿色) -->
+  <path d="M 730 220 Q 680 220 670 215 L 670 210 L 640 210" stroke="#69db7c" stroke-width="2" fill="none" marker-end="url(#arrowG)" filter="url(#glow)"/>
+  <text x="680" y="207" fill="#69db7c" font-size="9">GPIO0</text>
+
+  <path d="M 730 240 Q 680 240 670 235 L 670 235 L 640 235" stroke="#69db7c" stroke-width="2" fill="none" marker-end="url(#arrowG)" filter="url(#glow)"/>
+  <text x="680" y="249" fill="#69db7c" font-size="9">GPIO1</text>
+
+  <!-- ========== 摄像头 (右侧) ========== -->
+  <rect x="730" y="270" width="170" height="60" rx="8" fill="url(#modGrad)" stroke="#ff6b6b" stroke-width="2" filter="url(#shadow)"/>
+  <text x="815" y="295" text-anchor="middle" fill="#ff6b6b" font-size="14" font-weight="bold">ESP32-CAM 摄像头</text>
+  <text x="815" y="315" text-anchor="middle" fill="#aaa" font-size="9">OV2640 | UART TX/RX 连接</text>
+
+  <!-- 摄像头到ESP32连线 (红色) -->
+  <path d="M 730 290 Q 680 290 665 285 L 640 285" stroke="#ff6b6b" stroke-width="2" fill="none" marker-end="url(#arrowR)" filter="url(#glow)"/>
+  <text x="680" y="280" fill="#ff6b6b" font-size="9">TX→GPIO14</text>
+
+  <path d="M 730 305 Q 680 305 665 310 L 640 310" stroke="#ff6b6b" stroke-width="2" fill="none" marker-end="url(#arrowR)" filter="url(#glow)"/>
+  <text x="680" y="318" fill="#ff6b6b" font-size="9">RX→GPIO15</text>
+
+  <!-- ========== 底部：接线颜色图例 + 说明 ========== -->
+  <rect x="30" y="560" width="1140" height="320" rx="10" fill="#111d2b" stroke="#2a4a6a" stroke-width="1.5"/>
+
+  <!-- 图例 -->
+  <text x="60" y="590" fill="#fff" font-size="16" font-weight="bold">线缆颜色图例</text>
+  <line x1="60" y1="598" x2="300" y2="598" stroke="#2a4a6a" stroke-width="1"/>
+
+  <line x1="60" y1="620" x2="100" y2="620" stroke="#4ade80" stroke-width="3"/>
+  <text x="110" y="624" fill="#4ade80" font-size="12">I2S 麦克风信号线 (INMP441)</text>
+
+  <line x1="60" y1="645" x2="100" y2="645" stroke="#ffa94d" stroke-width="3"/>
+  <text x="110" y="649" fill="#ffa94d" font-size="12">I2S 功放信号线 (MAX98357A)</text>
+
+  <line x1="60" y1="670" x2="100" y2="670" stroke="#da77f2" stroke-width="3"/>
+  <text x="110" y="674" fill="#da77f2" font-size="12">LED 数据线 (WS2812B)</text>
+
+  <line x1="60" y1="695" x2="100" y2="695" stroke="#ff6b6b" stroke-width="3"/>
+  <text x="110" y="699" fill="#ff6b6b" font-size="12">摄像头 UART 串口线 (ESP32-CAM)</text>
+
+  <line x1="60" y1="720" x2="100" y2="720" stroke="#69db7c" stroke-width="3"/>
+  <text x="110" y="724" fill="#69db7c" font-size="12">按钮信号线</text>
+
+  <line x1="60" y1="745" x2="100" y2="745" stroke="#ef4444" stroke-width="3"/>
+  <text x="110" y="749" fill="#ef4444" font-size="12">3.3V 电源线 (红线)</text>
+
+  <line x1="60" y1="770" x2="100" y2="770" stroke="#f97316" stroke-width="3"/>
+  <text x="110" y="774" fill="#f97316" font-size="12">5V 电源线 (VIN)</text>
+
+  <line x1="60" y1="795" x2="100" y2="795" stroke="#6b7280" stroke-width="3"/>
+  <text x="110" y="799" fill="#9ca3af" font-size="12">GND 公共地线 (黑线)</text>
+
+  <!-- 组装步骤 -->
+  <text x="470" y="590" fill="#fff" font-size="16" font-weight="bold">组装步骤</text>
+  <line x1="470" y1="598" x2="1140" y2="598" stroke="#2a4a6a" stroke-width="1"/>
+
+  <g fill="#ccc" font-size="12">
+    <text x="480" y="625" fill="#74c0fc" font-weight="bold">Step 1 — 电源系统</text>
+    <text x="500" y="645">电池装入电池盒(串联) → 接 TP4056 的 B+/B-</text>
+    <text x="500" y="665">TP4056 的 OUT+/OUT- → 接 AMS1117 的 IN+/IN-</text>
+    <text x="500" y="685">AMS1117 输出 3.3V → 接面包板电源轨</text>
+
+    <text x="480" y="715" fill="#74c0fc" font-weight="bold">Step 2 — ESP32 主控</text>
+    <text x="500" y="735">ESP32 插到面包板中央，3V3 接电源轨，GND 接地线轨</text>
+
+    <text x="480" y="765" fill="#74c0fc" font-weight="bold">Step 3 — 外设模块</text>
+    <text x="500" y="785">① INMP441 按 GPIO 4/5/6 接线 (VDD→3.3V, L/R→GND)</text>
+    <text x="500" y="805">② MAX98357A 按 GPIO 7/8/9 接线 (VDD→5V VIN)</text>
+    <text x="500" y="825">③ WS2812B DIN→GPIO38 (VDD→5V)</text>
+    <text x="500" y="845">④ 按钮一端→GPIO，另一端→GND</text>
+    <text x="500" y="865">⑤ ESP32-CAM TX→GPIO14, RX→GPIO15</text>
+  </g>
+
+  <!-- 注意事项 -->
+  <text x="470" y="625" fill="none"/>
+  <rect x="870" y="615" width="280" height="250" rx="8" fill="#1a1a2e" stroke="#fbbf24" stroke-width="1" stroke-dasharray="5,3"/>
+  <text x="1010" y="640" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="bold">⚠ 注意事项</text>
+  <g fill="#fde68a" font-size="10.5">
+    <text x="885" y="660">• INMP441 的 L/R 引脚必须接 GND</text>
+    <text x="885" y="680">  (设定为左声道数据输出)</text>
+    <text x="885" y="705">• MAX98357A 供电用 5V (VIN)</text>
+    <text x="885" y="725">  不要接 3.3V，音量会不够</text>
+    <text x="885" y="750">• WS2812B 并联 4 颗，数据线</text>
+    <text x="885" y="770">  串联 (DIN→DOUT→DIN→...)</text>
+    <text x="885" y="795">• 所有模块 GND 必须连在一起</text>
+    <text x="885" y="815">  (公共地)</text>
+    <text x="885" y="840">• 首次用 USB-C 供电调试</text>
+    <text x="885" y="860">  确认无误后再换电池供电</text>
+  </g>
+
+</svg>

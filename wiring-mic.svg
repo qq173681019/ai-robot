@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="monospace">
+  <style>
+    .board { fill: #1a1a1a; stroke: #00ff88; stroke-width: 2; }
+    .module { fill: #2a2a2a; stroke: #ffaa00; stroke-width: 2; }
+    .pin { fill: #ff4444; }
+    .pin-label { fill: #fff; font-size: 11px; }
+    .wire { stroke: #00ddff; stroke-width: 3; fill: none; }
+    .wire-red { stroke: #ff4444; stroke-width: 3; fill: none; }
+    .wire-gnd { stroke: #888; stroke-width: 3; fill: none; }
+    .wire-pwr { stroke: #ffaa00; stroke-width: 3; fill: none; }
+    .title { fill: #fff; font-size: 18px; font-weight: bold; }
+    .label { fill: #4ade80; font-size: 12px; }
+    .note { fill: #fbbf24; font-size: 11px; }
+  </style>
+
+  <text x="300" y="25" text-anchor="middle" class="title">INMP441 → ESP32-S3 接线图</text>
+
+  <!-- ESP32-S3 board (left) -->
+  <rect x="30" y="80" width="180" height="260" class="board" rx="8"/>
+  <text x="120" y="105" text-anchor="middle" class="label">ESP32-S3 DEVKITC-1</text>
+
+  <!-- USB-C on left side -->
+  <rect x="20" y="130" width="15" height="30" fill="#666"/>
+  <text x="27" y="175" text-anchor="middle" class="pin-label" transform="rotate(-90 27 175)">USB-C</text>
+
+  <!-- GPIO pins (right side of ESP32, numbered top-down) -->
+  <circle cx="210" cy="130" r="6" class="pin"/>
+  <text x="225" y="134" class="pin-label">3V3</text>
+  <circle cx="210" cy="160" r="6" class="pin"/>
+  <text x="225" y="164" class="pin-label">GND</text>
+  <circle cx="210" cy="190" r="6" class="pin"/>
+  <text x="225" y="194" class="pin-label">GPIO4 (SCK)</text>
+  <circle cx="210" cy="220" r="6" class="pin"/>
+  <text x="225" y="224" class="pin-label">GPIO5 (WS)</text>
+  <circle cx="210" cy="250" r="6" class="pin"/>
+  <text x="225" y="254" class="pin-label">GPIO6 (SD)</text>
+  <circle cx="210" cy="280" r="6" class="pin"/>
+  <text x="225" y="284" class="pin-label">GPIO2 (LED)</text>
+
+  <!-- INMP441 module (right) -->
+  <rect x="400" y="100" width="170" height="200" class="module" rx="6"/>
+  <text x="485" y="125" text-anchor="middle" class="label">INMP441 (I2S 麦克风)</text>
+
+  <!-- INMP441 pins (left side, top to bottom: GND, L/R, WS, SCK, SD, VDD) -->
+  <circle cx="400" cy="160" r="5" class="pin"/>
+  <text x="395" y="164" text-anchor="end" class="pin-label">GND</text>
+  <circle cx="400" cy="185" r="5" class="pin"/>
+  <text x="395" y="189" text-anchor="end" class="pin-label">L/R</text>
+  <circle cx="400" cy="210" r="5" class="pin"/>
+  <text x="395" y="214" text-anchor="end" class="pin-label">WS</text>
+  <circle cx="400" cy="235" r="5" class="pin"/>
+  <text x="395" y="239" text-anchor="end" class="pin-label">SCK</text>
+  <circle cx="400" cy="260" r="5" class="pin"/>
+  <text x="395" y="264" text-anchor="end" class="pin-label">SD</text>
+  <circle cx="400" cy="285" r="5" class="pin"/>
+  <text x="395" y="289" text-anchor="end" class="pin-label">VDD</text>
+
+  <!-- Wires -->
+  <!-- VDD → 3V3 (orange/power) -->
+  <path d="M 400 285 L 400 295 L 220 295 L 220 130" class="wire-pwr"/>
+  <text x="280" y="310" class="note">3.3V 供电 (黄)</text>
+
+  <!-- GND → GND (gray) -->
+  <path d="M 400 160 L 380 160 L 380 150 L 220 150 L 220 160" class="wire-gnd"/>
+  <text x="290" y="146" class="note">GND 共地 (黑)</text>
+
+  <!-- L/R → GND (gray) -->
+  <path d="M 400 185 L 360 185 L 360 320 L 220 320 L 220 160" class="wire-gnd"/>
+  <text x="290" y="334" class="note">L/R 接 GND = 左声道 (黑)</text>
+
+  <!-- SCK → GPIO4 (cyan) -->
+  <path d="M 400 235 L 360 235 L 360 200 L 220 200 L 220 190" class="wire"/>
+  <text x="290" y="218" class="note">SCK 数据时钟 (青)</text>
+
+  <!-- WS → GPIO5 (cyan) -->
+  <path d="M 400 210 L 340 210 L 340 230 L 220 230 L 220 220" class="wire"/>
+  <text x="280" y="244" class="note">WS 字选择 (青)</text>
+
+  <!-- SD → GPIO6 (cyan) -->
+  <path d="M 400 260 L 320 260 L 320 260 L 220 260 L 220 250" class="wire"/>
+  <text x="260" y="274" class="note">SD 数据 (青)</text>
+
+  <!-- Notes -->
+  <text x="300" y="370" text-anchor="middle" class="note">⚠️ 5 根杜邦线, F-F (母对母)</text>
+  <text x="300" y="385" text-anchor="middle" class="note">接好告诉我, 我跑 test-mic.py 验证</text>
+</svg>

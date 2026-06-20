@@ -18,12 +18,16 @@ import uasyncio as asyncio
 import json
 import struct
 import time
+import math
 from machine import Pin, I2S
 
 # ==================== 配置 ====================
-WIFI_SSID = "YOUR_WIFI_SSID"      # 改成你的WiFi名
-WIFI_PASS = "YOUR_WIFI_PASSWORD"  # 改成你的WiFi密码
-SERVER_URL = "ws://192.168.1.100:8765"  # 改成你电脑的IP
+WIFI_SSID = "Jerico"            # 改成你的WiFi名
+WIFI_PASS = "gq850831"            # 改成你的WiFi密码
+SERVER_URL = "ws://192.168.0.109:8765"  # 改成你电脑的IP (WLAN 192.168.0.109)
+
+# 测试模式: "mic"=循环录音打印rms, "speaker"=播1kHz, "full"=完整机器人
+TEST_MODE = "speaker"
 
 # 引脚定义
 PIN_MIC_SCK = 4
@@ -222,31 +226,48 @@ class RobotClient:
             self.connected = True
             print("[WS] Connected!")
             self.led.show_idle()
+
+            # WebSocket 升级握手 (Sec-WebSocket-Key 必须是 16 字节 base64)
+            import ubinascii
+            key_bytes = ubinascii.b2a_base64(b'\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10')[:-1]
+            handshake = (
+                b"GET / HTTP/1.1\r\n"
+                b"Host: " + host.encode() + b":" + str(port).encode() + b"\r\n"
+                b"Upgrade: websocket\r\n"
+                b"Connection: Upgrade\r\n"
+                b"Sec-WebSocket-Key: " + key_bytes + b"\r\n"
+                b"Sec-WebSocket-Version: 13\r\n"
+                b"\r\n"
+            )
+            sock.send(handshake)
+            resp = b""
+            while b"\r\n\r\n" not in resp:
+                chunk = sock.recv(1024)
+                if not chunk:
+                    raise Exception("WS handshake EOF")
+                resp += chunk
+            if b" 101 " not in resp.split(b"\r\n", 1)[0]:
+                snippet = resp[:100].decode("utf-8", "replace")
+                raise Exception("WS handshake failed: " + snippet)
+            print("[WS] Handshake OK")
         except Exception as e:
+            import sys
+            sys.print_exception(e)
             print(f"[WS] Connection failed: {e}")
             self.led.show_error()
             return
 
-        # 简易 TCP 帧协议:
-        # 发送: [4字节长度][JSON头][音频数据]
-        # 接收: [4字节长度][JSON头][音频数据]
-
+        # 主循环: 录音 → 发送 → 接收 → 播放
         try:
             while self.connected:
-                # 等待触发（按钮按下或持续监听模式）
                 self.led.show_idle()
                 print("[Robot] Waiting for trigger...")
-
-                # TODO: 这里可以改成按钮触发或VAD（语音活动检测）
-                # 目前用简单定时循环测试
                 await asyncio.sleep(1)
 
-                # 录音
                 self.led.show_listening()
                 print("[Mic] Recording...")
                 audio_data = self.mic.read(RECORD_DURATION_MS)
 
-                # 发送音频到服务器
                 self.led.show_thinking()
                 header = json.dumps({
                     "type": "audio",
@@ -257,34 +278,23 @@ class RobotClient:
                     "size": len(audio_data),
                 })
                 header_bytes = header.encode()
+                payload = struct.pack(">I", len(header_bytes)) + header_bytes + audio_data
+                self._ws_send(sock, payload)
+                print(f"[WS] Sent {len(payload)} bytes")
 
-                # 帧格式: [4字节header长度][header][音频]
-                frame = struct.pack(">I", len(header_bytes)) + header_bytes + audio_data
-                sock.send(frame)
-                print(f"[WS] Sent {len(frame)} bytes")
-
-                # 接收服务器响应
-                # 先读4字节header长度
-                resp_len_bytes = self._recv_exact(sock, 4)
-                if not resp_len_bytes:
+                resp = self._ws_recv(sock)
+                if not resp:
                     print("[WS] Server disconnected")
                     break
-                resp_header_len = struct.unpack(">I", resp_len_bytes)[0]
-
-                # 读header
-                resp_header_bytes = self._recv_exact(sock, resp_header_len)
-                if not resp_header_bytes:
-                    break
-                resp_header = json.loads(resp_header_bytes.decode())
-
-                # 读音频数据
+                resp_header_len = struct.unpack(">I", resp[:4])[0]
+                resp_header = json.loads(resp[4:4 + resp_header_len].decode())
                 audio_size = resp_header.get("size", 0)
                 if audio_size > 0:
-                    resp_audio = self._recv_exact(sock, audio_size)
+                    start = 4 + resp_header_len
+                    resp_audio = resp[start:start + audio_size]
                     self.led.show_speaking()
                     self.speaker.play(resp_audio)
 
-                # 处理动作指令
                 action = resp_header.get("action", None)
                 if action == "led":
                     r = resp_header.get("r", 0)
@@ -292,14 +302,52 @@ class RobotClient:
                     b = resp_header.get("b", 0)
                     self.led.set_all(r, g, b)
 
-                print("[Robot] Response played ✓")
-
+                print("[Robot] Response played")
         except Exception as e:
-            print(f"[WS] Error: {e}")
-            self.led.show_error()
+            import sys
+            sys.print_exception(e)
+            print(f"[WS] Loop error: {e}")
         finally:
-            sock.close()
-            self.connected = False
+            try:
+                sock.close()
+            except:
+                pass
+
+    def _ws_send(self, sock, payload: bytes):
+        """包 WS 帧 (binary) 发送"""
+        import os
+        mask = os.urandom(4)
+        L = len(payload)
+        if L < 126:
+            hdr = b'\x82' + bytes([0x80 | L])
+        elif L < 65536:
+            hdr = b'\x82' + bytes([0x80 | 126]) + struct.pack(">H", L)
+        else:
+            hdr = b'\x82' + bytes([0x80 | 127]) + struct.pack(">Q", L)
+        out = bytearray(hdr)
+        out.extend(mask)
+        m = bytearray(L)
+        for i in range(L):
+            m[i] = payload[i] ^ mask[i % 4]
+        out.extend(m)
+        sock.send(bytes(out))
+
+    def _ws_recv(self, sock) -> bytes:
+        """收一帧 WS binary, 返回 payload"""
+        hdr = self._recv_exact(sock, 2)
+        if not hdr or len(hdr) < 2:
+            return b""
+        b1, b2 = hdr[0], hdr[1]
+        opcode = b1 & 0x0F
+        L = b2 & 0x7F
+        if L == 126:
+            ext = self._recv_exact(sock, 2)
+            L = struct.unpack(">H", ext)[0]
+        elif L == 127:
+            ext = self._recv_exact(sock, 8)
+            L = struct.unpack(">Q", ext)[0]
+        payload = self._recv_exact(sock, L)
+        return payload
 
     def _recv_exact(self, sock, n):
         """精确接收n个字节"""
@@ -329,6 +377,40 @@ async def main():
 
     # 2. 初始化硬件
     mic = Microphone()
+
+    # 2b. 测试模式分支 (P1 验证, 不接服务器不接喇叭)
+    if TEST_MODE == "mic":
+        print("[TEST_MODE=mic] 5 cycles, record 1s + print rms.")
+        for i in range(5):
+            audio = mic.read(1000)
+            samples = struct.unpack(f'<{int(SAMPLE_RATE*1)}h', audio)
+            rms = int((sum(s*s for s in samples) / len(samples)) ** 0.5)
+            mx, mn = max(samples), min(samples)
+            print(f"  [{i+1}/5] rms={rms:5d}  max={mx:6d}  min={mn:6d}")
+            time.sleep(0.1)
+        print("[TEST_MODE=mic] done.")
+        import sys
+        sys.exit(0)
+
+    if TEST_MODE == "speaker":
+        print("[TEST_MODE=speaker] LONG 3s 1kHz on GPIO7/8/9")
+        speaker = Speaker()
+        # 1 个 3 秒长音
+        freq = 1000
+        amp = 32000  # 满量程
+        n = SAMPLE_RATE * 3  # 3 秒
+        wave = bytearray(n * 2)
+        for i in range(n):
+            s = int(amp * math.sin(2 * math.pi * freq * i / SAMPLE_RATE))
+            wave[2*i] = s & 0xFF
+            wave[2*i+1] = (s >> 8) & 0xFF
+        print(f"  play {freq}Hz 3s, amp={amp}, {len(wave)} bytes")
+        speaker.play(bytes(wave))
+        print("  done. listen for 1kHz tone 3 seconds.")
+        speaker.deinit()
+        import sys
+        sys.exit(0)
+
     speaker = Speaker()
     led = LEDController()
     button = Button()

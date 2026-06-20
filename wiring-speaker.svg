@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="monospace">
+  <style>
+    .board { fill: #1a1a1a; stroke: #00ff88; stroke-width: 2; }
+    .module { fill: #2a2a2a; stroke: #ffaa00; stroke-width: 2; }
+    .pin { fill: #ff4444; }
+    .pin-label { fill: #fff; font-size: 11px; }
+    .wire { stroke: #00ddff; stroke-width: 3; fill: none; }
+    .wire-red { stroke: #ff4444; stroke-width: 3; fill: none; }
+    .wire-gnd { stroke: #888; stroke-width: 3; fill: none; }
+    .wire-pwr { stroke: #ffaa00; stroke-width: 3; fill: none; }
+    .title { fill: #fff; font-size: 18px; font-weight: bold; }
+    .label { fill: #4ade80; font-size: 12px; }
+    .note { fill: #fbbf24; font-size: 11px; }
+  </style>
+
+  <text x="300" y="25" text-align="middle" class="title">MAX98357A → ESP32-S3 接线图</text>
+
+  <!-- ESP32-S3 board (left) -->
+  <rect x="30" y="80" width="180" height="260" class="board" rx="8"/>
+  <text x="120" y="105" text-anchor="middle" class="label">ESP32-S3 DEVKITC-1</text>
+
+  <!-- GPIO pins (right side) -->
+  <circle cx="210" cy="130" r="6" class="pin"/>
+  <text x="225" y="134" class="pin-label">3V3</text>
+  <circle cx="210" cy="160" r="6" class="pin"/>
+  <text x="225" y="164" class="pin-label">GND</text>
+  <circle cx="210" cy="190" r="6" class="pin"/>
+  <text x="225" y="194" class="pin-label">GPIO7 (BCLK)</text>
+  <circle cx="210" cy="220" r="6" class="pin"/>
+  <text x="225" y="224" class="pin-label">GPIO8 (LRC/WS)</text>
+  <circle cx="210" cy="250" r="6" class="pin"/>
+  <text x="225" y="254" class="pin-label">GPIO9 (DIN/SD)</text>
+
+  <!-- MAX98357A module (right) -->
+  <rect x="400" y="100" width="170" height="220" class="module" rx="6"/>
+  <text x="485" y="125" text-anchor="middle" class="label">MAX98357A (I2S 功放)</text>
+
+  <!-- MAX98357A pins (left side, top to bottom: GND, VIN, SD, GAIN, BCLK, LRC, DIN) -->
+  <circle cx="400" cy="160" r="5" class="pin"/>
+  <text x="395" y="164" text-anchor="end" class="pin-label">GND</text>
+  <circle cx="400" cy="185" r="5" class="pin"/>
+  <text x="395" y="189" text-anchor="end" class="pin-label">VIN (3-5V)</text>
+  <circle cx="400" cy="210" r="5" class="pin"/>
+  <text x="395" y="214" text-anchor="end" class="pin-label">SD (声道选择)</text>
+  <circle cx="400" cy="235" r="5" class="pin"/>
+  <text x="395" y="239" text-anchor="end" class="pin-label">GAIN (增益)</text>
+  <circle cx="400" cy="260" r="5" class="pin"/>
+  <text x="395" y="264" text-anchor="end" class="pin-label">BCLK</text>
+  <circle cx="400" cy="285" r="5" class="pin"/>
+  <text x="395" y="289" text-anchor="end" class="pin-label">LRC</text>
+  <circle cx="400" cy="310" r="5" class="pin"/>
+  <text x="395" y="314" text-anchor="end" class="pin-label">DIN</text>
+
+  <!-- Wires -->
+  <!-- VIN → 3V3 (power) -->
+  <path d="M 400 185 L 400 320 L 220 320 L 220 130" class="wire-pwr"/>
+  <!-- GND → GND -->
+  <path d="M 400 160 L 400 340 L 220 340 L 220 160" class="wire-gnd"/>
+  <!-- BCLK → GPIO7 -->
+  <path d="M 400 260 L 220 190" class="wire"/>
+  <!-- LRC → GPIO8 -->
+  <path d="M 400 285 L 220 220" class="wire"/>
+  <!-- DIN → GPIO9 -->
+  <path d="M 400 310 L 220 250" class="wire"/>
+  <!-- SD → GND (左声道, 单声道配置) -->
+  <path d="M 400 210 L 350 210 L 350 360 L 220 360 L 220 160" class="wire-gnd"/>
+  <!-- GAIN → GND (15dB 增益) -->
+  <path d="M 400 235 L 360 235 L 360 350 L 220 350 L 220 160" class="wire-gnd"/>
+
+  <!-- Notes -->
+  <text x="50" y="370" class="note">⚠️ 喇叭线: OUT+ / OUT- 直接接 4Ω 喇叭, 无极性(实际有+, 标在板上)</text>
+  <text x="50" y="385" class="note">⚠️ VIN 必须接 3V3~5V, 不能只靠 ESP32 GPIO 供电(峰值电流 ~1A)</text>
+  <text x="50" y="400" class="note">⚠️ SD 接 GND = 左声道;GAIN 接 GND = 15dB(推荐);改接 3V3 = 9dB/12dB</text>
+</svg>

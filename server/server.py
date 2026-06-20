@@ -331,7 +331,7 @@ class RobotServer:
         log.info(f"[Server] Starting on ws://{SERVER_HOST}:{SERVER_PORT}")
         log.info(f"[Config] STT={STT_ENGINE}, LLM={LLM_MODEL}, TTS=edge-tts/{TTS_VOICE}")
 
-        async with websockets.serve(self.handle_client, SERVER_HOST, SERVER_PORT):
+        async with websockets.serve(self.handle_client, SERVER_HOST, SERVER_PORT, ping_interval=None, ping_timeout=None):
             log.info("[Server] Ready! Waiting for ESP32 connection...")
             await asyncio.Future()  # 永久运行
 

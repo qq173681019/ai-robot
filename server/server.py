@@ -28,12 +28,12 @@ log = logging.getLogger("robot-server")
 
 # ==================== 配置 ====================
 SERVER_HOST = "0.0.0.0"
-SERVER_PORT = 8765
+SERVER_PORT = 8770  # 8765/8766 都被占/被绑 (WSL NAT 表残留), 8770 干净
 
 # LLM 配置 — MiniMax (Anthropic 兼容接口)
 # 推荐用环境变量管理，避免 key 写进 git
 #   export ROBOT_LLM_API_KEY=sk-cp-...
-DEFAULT_LLM_API_KEY = "sk-cp-R1F32lshjCJ9Lek4rrccznp4LMipFbojBW9-SWwyWHGU1G9oanleG-E9SIORPUUbHcCkw_N1Hp4A5qw8jTzipbf-JB2H8yYD3o3vE_7O5GwQ6Nw5BCpSd7g"
+DEFAULT_LLM_API_KEY = "sk-cp-...Sd7g"
 LLM_API_KEY = os.environ.get("ROBOT_LLM_API_KEY", DEFAULT_LLM_API_KEY)
 LLM_BASE_URL = "https://api.minimaxi.com/anthropic"
 LLM_MODEL = "mm2.7"
@@ -41,8 +41,13 @@ LLM_MODEL = "mm2.7"
 # TTS 配置 (Edge TTS 免费)
 TTS_VOICE = "zh-CN-XiaoxiaoNeural"  # 中文女声
 
-# STT 配置
+# STT 配置 — 本地 whisper.cpp（2026-06-21 装在 /tmp/whisper.cpp）
 STT_ENGINE = "local"  # "local" = whisper.cpp, "api" = OpenAI Whisper API
+# Windows 端 server 通过 wsl.exe 调用 WSL Ubuntu 内部的 whisper-cli (避免在 Windows 重编译)
+# 注意: wsl.exe 默认进 docker-desktop (有 * 标记的), 必须 -d Ubuntu 显式指定
+WHISPER_CLI = ["wsl.exe", "-d", "Ubuntu"]
+WHISPER_CLI_WSL = "/tmp/whisper.cpp/build/bin/whisper-cli"
+WHISPER_MODEL_WSL = "/tmp/whisper.cpp/models/ggml-tiny.bin"
 
 # 系统提示词
 SYSTEM_PROMPT = """你是一个友好的桌面AI机器人助手。你的名字叫"小呆"。
@@ -85,7 +90,7 @@ class STTEngine:
             return await self._api_whisper(audio_bytes, sample_rate)
 
     async def _local_whisper(self, audio_bytes, sample_rate):
-        """使用本地 whisper.cpp (需要安装)"""
+        """使用本地 whisper.cpp (whisper-cli) — Windows 端通过 wsl.exe 调用 WSL 内部的 whisper-cli"""
         import tempfile
         import subprocess
 
@@ -93,19 +98,53 @@ class STTEngine:
         self._bytes_to_wav(audio_bytes, tmp_wav, sample_rate)
 
         try:
+            # Windows 临时文件 WSL 通过 /mnt/c/... 可直接访问
+            wav_path_str = str(tmp_wav).replace('\\', '/')
+            # 如果是 C:\Users\...\Temp\foo.wav → /mnt/c/Users/.../Temp/foo.wav
+            if wav_path_str[1] == ':':
+                drive = wav_path_str[0].lower()
+                wsl_wav_path = f"/mnt/{drive}{wav_path_str[2:]}"
+            else:
+                wsl_wav_path = wav_path_str
+            log.info(f"[STT] wav file: {wsl_wav_path}")
+
+            # 调用 whisper-cli (在 WSL Ubuntu 内部)
             result = subprocess.run(
-                ["whisper-cpp", "-f", str(tmp_wav), "--language", "zh", "--model", "base"],
-                capture_output=True, text=True, timeout=30
+                WHISPER_CLI + [
+                    WHISPER_CLI_WSL,
+                    "-m", WHISPER_MODEL_WSL,
+                    "-f", wsl_wav_path,
+                    "-l", "zh",
+                    "--no-timestamps",
+                    "-t", "4",
+                ],
+                capture_output=True, text=True, timeout=30,
             )
-            text = result.stdout.strip()
-            # whisper.cpp 输出格式: [00:00:00.000 --> 00:00:03.000] 文字内容
-            if "]" in text:
-                text = text.split("]", 1)[1].strip()
-            log.info(f"[STT] {text}")
+
+            # 提取识别文字
+            text = ""
+            for line in result.stdout.splitlines():
+                line = line.strip()
+                if not line:
+                    continue
+                if (line.startswith("whisper_") or line.startswith("system_info")
+                    or line.startswith("main:") or line.startswith("read_audio")
+                    or line.startswith("[")
+                    or ("=" in line and "time" in line)):
+                    continue
+                text = line
+
+            log.info(f"[STT] {text!r} (rc={result.returncode})")
+            if not text and result.stderr:
+                log.warning(f"[STT] stderr: {result.stderr[:200]}")
             return text
-        except FileNotFoundError:
-            log.warning("[STT] whisper-cpp not found, using dummy input")
-            return "你好"
+
+        except subprocess.TimeoutExpired:
+            log.error("[STT] whisper-cli timeout (>30s)")
+            return ""
+        except Exception as e:
+            log.error(f"[STT] whisper-cli error: {e}", exc_info=True)
+            return ""
         finally:
             tmp_wav.unlink(missing_ok=True)
 
@@ -332,7 +371,7 @@ class RobotServer:
         log.info(f"[Config] STT={STT_ENGINE}, LLM={LLM_MODEL}, TTS=edge-tts/{TTS_VOICE}")
 
         async with websockets.serve(self.handle_client, SERVER_HOST, SERVER_PORT, ping_interval=None, ping_timeout=None):
-            log.info("[Server] Ready! Waiting for ESP32 connection...")
+            log.info(f"[Server] Ready on port {SERVER_PORT}! Waiting for ESP32 connection...")
             await asyncio.Future()  # 永久运行
 
 

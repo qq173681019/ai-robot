@@ -1,0 +1,24 @@
+# Secrets & env
+.env
+*.key
+secrets/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Whisper models
+whisper.cpp/*.bin
+
+# Backups
+*.bak
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
